@@ -1,4 +1,4 @@
-# systemdtime
+# go-systemd-time
 
 [![CircleCI](https://circleci.com/gh/trstringer/go-systemd-time/tree/master.svg?style=svg)](https://circleci.com/gh/trstringer/go-systemd-time/tree/master)
 
