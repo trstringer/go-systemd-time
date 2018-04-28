@@ -8,7 +8,7 @@ In command line applications, it is convenient to use the notation since `-1day`
 
 ## Installation
 
-You can use `dep` to install this vendor dependency, or `go get github.com/trstring/go-systemd-time/systemdtime`.
+You can use `dep` to install this vendor dependency, or `go get github.com/trstringer/go-systemd-time/systemdtime`.
 
 ## Usage
 
