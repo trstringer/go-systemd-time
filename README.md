@@ -42,8 +42,8 @@ func main() {
 Output from the above sample...
 
 ```
-Current date/time: 2018-04-28 10:14:10.545534601 -0400 EDT m=+0.000220259      
-Two days and three hours ago: 2018-04-26 07:14:10.545534601 -0400 EDT m=-183599.999779741                                                                      
+Current date/time: 2018-04-28 10:14:10.545534601 -0400 EDT m=+0.000220259
+Two days and three hours ago: 2018-04-26 07:14:10.545534601 -0400 EDT m=-183599.999779741
 Eighteen days and twelve minutes from now: 2018-05-16 10:26:10.545534601 -0400 EDT m=+1555920.000220259
 ```
 
