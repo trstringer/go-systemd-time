@@ -27,14 +27,14 @@ func main() {
 	now := time.Now()
 	fmt.Printf("Current date/time: %s\n", now)
 
-	twoDaysThreeHoursAgo, err := systemdtime.AdjustTime(&now, "-2 days 3 hr")
+	twoDaysThreeHoursAgo, err := systemdtime.AdjustTime(now, "-2 days 3 hr")
 	if err != nil {
 		fmt.Printf("Error converting: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Printf("Two days and three hours ago: %s\n", twoDaysThreeHoursAgo)
 
-	eighteenDaysTwelveMinutesFromNow, err := systemdtime.AdjustTime(&now, "18d12min")
+	eighteenDaysTwelveMinutesFromNow, err := systemdtime.AdjustTime(now, "18d12min")
 	if err != nil {
 		fmt.Printf("Error converting: %v\n", err)
 		os.Exit(1)
