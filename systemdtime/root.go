@@ -72,20 +72,13 @@ func ToDuration(raw string) (time.Duration, error) {
 }
 
 // AdjustTime takes a systemd time adjustment string and uses it to modify a time.Time
-func AdjustTime(original *time.Time, adjustment string) (time.Time, error) {
+func AdjustTime(t time.Time, adjustment string) (time.Time, error) {
 	duration, err := ToDuration(adjustment)
 	if err != nil {
 		return time.Time{}, err
 	}
-
-	return adjustTimeByDuration(original, duration), nil
-}
-
-func adjustTimeByDuration(original *time.Time, adjustment time.Duration) time.Time {
-	if original == nil {
-		rightNow := time.Now()
-		original = &rightNow
+	if t.IsZero() {
+		t = time.Now()
 	}
-
-	return original.Add(adjustment)
+	return t.Add(duration), nil
 }

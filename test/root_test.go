@@ -127,7 +127,7 @@ func TestToDuration(t *testing.T) {
 
 func TestAdjustTime(t *testing.T) {
 	time1 := time.Date(2012, time.May, 12, 5, 0, 0, 0, time.UTC)
-	time1Mod, err := systemdtime.AdjustTime(&time1, " 4 days 2 hr")
+	time1Mod, err := systemdtime.AdjustTime(time1, " 4 days 2 hr")
 	if err != nil {
 		t.Error(err)
 	}
