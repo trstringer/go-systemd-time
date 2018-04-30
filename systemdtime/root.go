@@ -47,12 +47,11 @@ func ToDuration(raw string) (time.Duration, error) {
 	}
 	var total time.Duration
 	for _, group := range reGroups.FindAllString(raw, -1) {
-		group := strings.TrimSpace(group)
+		group = strings.TrimSpace(group)
 		parts := reParts.FindStringSubmatch(group)
-
-		// if we run into a case where there aren't exactly two matches
-		// then that means this is an unexpected string and we should error out
 		if len(parts) != 3 {
+			// if we run into a case where there aren't exactly two matches
+			// then that means this is an unexpected string and we should error out
 			return 0, fmt.Errorf("Unexpected match count for '%s': expected 2 and got %d", group, len(parts))
 		}
 		value, err := strconv.Atoi(parts[1])
