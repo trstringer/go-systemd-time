@@ -8,53 +8,28 @@ import (
 	"time"
 )
 
+var units = []struct {
+	Regex    *regexp.Regexp
+	Duration time.Duration
+}{
+	{regexp.MustCompile(`^us(ec)?$`), time.Microsecond},
+	{regexp.MustCompile(`^ms(ec)?$`), time.Millisecond},
+	{regexp.MustCompile(`^s(ec(onds?)?)?$`), time.Second},
+	{regexp.MustCompile(`^m(in(utes?)?)?$`), time.Minute},
+	{regexp.MustCompile(`^(hr|h(ours?)?)$`), time.Hour},
+	{regexp.MustCompile(`^d(ays?)?$`), 24 * time.Hour},
+	{regexp.MustCompile(`^w(eeks?)?$`), 7 * 24 * time.Hour},
+	{regexp.MustCompile(`^(M|months?)$`), time.Duration(30.44 * 24 * float64(time.Hour))},
+	{regexp.MustCompile(`^y(ears?)?$`), time.Duration(365.25 * 24 * float64(time.Hour))},
+}
+
 // UnitToDuration converts a systemd unit (e.g. "day") to time.Duration
 func UnitToDuration(unit string) (time.Duration, error) {
-	// microseconds
-	if matched, err := regexp.MatchString(`^us(ec)?$`, unit); err == nil && matched {
-		return time.Microsecond, nil
+	for _, u := range units {
+		if u.Regex.MatchString(unit) {
+			return u.Duration, nil
+		}
 	}
-
-	// milliseconds
-	if matched, err := regexp.MatchString(`^ms(ec)?$`, unit); err == nil && matched {
-		return time.Millisecond, nil
-	}
-
-	// seconds
-	if matched, err := regexp.MatchString(`^s(ec(onds?)?)?$`, unit); err == nil && matched {
-		return time.Second, nil
-	}
-
-	// minutes
-	if matched, err := regexp.MatchString(`^m(in(utes?)?)?$`, unit); err == nil && matched {
-		return time.Minute, nil
-	}
-
-	// hours
-	if matched, err := regexp.MatchString(`^(hr|h(ours?)?)$`, unit); err == nil && matched {
-		return time.Hour, nil
-	}
-
-	// days
-	if matched, err := regexp.MatchString(`^d(ays?)?$`, unit); err == nil && matched {
-		return 24 * time.Hour, nil
-	}
-
-	// weeks
-	if matched, err := regexp.MatchString(`^w(eeks?)?$`, unit); err == nil && matched {
-		return 7 * 24 * time.Hour, nil
-	}
-
-	// months
-	if matched, err := regexp.MatchString(`^(M|months?)$`, unit); err == nil && matched {
-		return time.Duration(30.44 * float64(24) * float64(time.Hour)), nil
-	}
-
-	// years
-	if matched, err := regexp.MatchString(`^y(ears?)?$`, unit); err == nil && matched {
-		return time.Duration(365.25 * float64(24) * float64(time.Hour)), nil
-	}
-
 	return 0, fmt.Errorf("Unit %s did not match", unit)
 }
 
