@@ -33,63 +33,42 @@ func UnitToDuration(unit string) (time.Duration, error) {
 	return 0, fmt.Errorf("Unit %s did not match", unit)
 }
 
+var (
+	reAdjustment = regexp.MustCompile(`^\s*-?\s*(\d+\s*[a-z]+)`)
+	reNegative   = regexp.MustCompile(`^\s*-.*`)
+	reGroups     = regexp.MustCompile(`\d+\s*[a-z]+`)
+	reParts      = regexp.MustCompile(`^(\d+)\s*([a-z]+)$`)
+)
+
 // ToDuration converts a systemd relative time string into time.Duration
 func ToDuration(raw string) (time.Duration, error) {
-	re, err := regexp.Compile(`^\s*-?\s*(\d+\s*[a-z]+)`)
-	if err != nil {
-		return 0, err
-	}
-
-	if !re.MatchString(raw) {
+	if !reAdjustment.MatchString(raw) {
 		return 0, fmt.Errorf("ToDuration: incorrect format for raw input %s", raw)
 	}
-
-	reNegative, err := regexp.Compile(`^\s*-.*`)
-	if err != nil {
-		return 0, err
-	}
-	isNegative := reNegative.MatchString(raw)
-
-	reGroups, err := regexp.Compile(`\d+\s*[a-z]+`)
-	if err != nil {
-		return 0, err
-	}
-
-	matches := reGroups.FindAllString(raw, -1)
-
-	totalDuration := time.Duration(0)
-	reSubGroup, err := regexp.Compile(`^(\d+)\s*([a-z]+)$`)
-	if err != nil {
-		return 0, err
-	}
-	for _, match := range matches {
-		matchTrimmed := strings.Replace(match, " ", "", -1)
-		subGroupMatches := reSubGroup.FindStringSubmatch(matchTrimmed)
+	var total time.Duration
+	for _, group := range reGroups.FindAllString(raw, -1) {
+		group := strings.TrimSpace(group)
+		parts := reParts.FindStringSubmatch(group)
 
 		// if we run into a case where there aren't exactly two matches
 		// then that means this is an unexpected string and we should error out
-		if len(subGroupMatches) != 3 {
-			return 0, fmt.Errorf("Unexpected match count for '%s': expected 2 and got %d", matchTrimmed, len(subGroupMatches))
+		if len(parts) != 3 {
+			return 0, fmt.Errorf("Unexpected match count for '%s': expected 2 and got %d", group, len(parts))
 		}
-
-		subGroupMatchValue, err := strconv.Atoi(subGroupMatches[1])
+		value, err := strconv.Atoi(parts[1])
 		if err != nil {
 			return 0, err
 		}
-
-		subGroupMatchUnit, err := UnitToDuration(subGroupMatches[2])
+		unit, err := UnitToDuration(parts[2])
 		if err != nil {
 			return 0, err
 		}
-
-		totalDuration += time.Duration(subGroupMatchValue) * subGroupMatchUnit
+		total += time.Duration(value) * unit
 	}
-
-	if isNegative {
-		totalDuration *= -1
+	if reNegative.MatchString(raw) {
+		total = -total
 	}
-
-	return totalDuration, nil
+	return total, nil
 }
 
 // AdjustTime takes a systemd time adjustment string and uses it to modify a time.Time
