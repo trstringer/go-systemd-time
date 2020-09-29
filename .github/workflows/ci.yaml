@@ -1,0 +1,15 @@
+on:
+  push:
+    branch:
+      - $default-branch
+  pull_request:
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: test
+        run: go test -v ./...
