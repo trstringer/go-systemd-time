@@ -1,6 +1,6 @@
 # go-systemd-time
 
-![.github/workflows/ci.yaml](https://github.com/trstringer/go-systemd-time/workflows/.github/workflows/ci.yaml/badge.svg)
+![ci](https://github.com/trstringer/go-systemd-time/workflows/ci/badge.svg)
 
 _Go implementation of systemd time (`man systemd.time`)_
 
