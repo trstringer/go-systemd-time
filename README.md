@@ -1,5 +1,7 @@
 # go-systemd-time
 
+![.github/workflows/ci.yaml](https://github.com/trstringer/go-systemd-time/workflows/.github/workflows/ci.yaml/badge.svg)
+
 _Go implementation of systemd time (`man systemd.time`)_
 
 In command line applications, it is convenient to use the notation since `-1day`, or in `5 hours`. This package takes that string (using systemd time specs) and converts it into `time.Duration`. There is also a helper function that can take the raw string time adjustment and a `time.Time` (or `nil` for `time.Now()`) object and apply the adjustment to immutably. See [below for usage](#usage).
