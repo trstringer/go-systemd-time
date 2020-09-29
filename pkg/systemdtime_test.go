@@ -1,10 +1,8 @@
-package systemdtimetest
+package systemdtime
 
 import (
 	"testing"
 	"time"
-
-	"github.com/trstringer/go-systemd-time/systemdtime"
 )
 
 func TestUnitParsingValue(t *testing.T) {
@@ -40,7 +38,7 @@ func TestUnitParsingValue(t *testing.T) {
 	}
 
 	for input, expectedDuration := range testInputs {
-		duration, err := systemdtime.UnitToDuration(input)
+		duration, err := UnitToDuration(input)
 		if err != nil {
 			t.Errorf("Error converting unit input to duration: %v", err)
 		}
@@ -95,7 +93,7 @@ func TestUnitParsingSuccess(t *testing.T) {
 	}
 
 	for input, shouldSucceed := range testInputs {
-		_, err := systemdtime.UnitToDuration(input)
+		_, err := UnitToDuration(input)
 		if (err == nil) == shouldSucceed {
 			t.Logf("Input '%s' passed test with shouldSucceed set to %t", input, shouldSucceed)
 		} else {
@@ -114,7 +112,7 @@ func TestToDuration(t *testing.T) {
 	}
 
 	for input, output := range testInputs {
-		duration, err := systemdtime.ToDuration(input)
+		duration, err := ToDuration(input)
 		if err != nil {
 			t.Errorf("%v", err)
 		}
@@ -127,7 +125,7 @@ func TestToDuration(t *testing.T) {
 
 func TestAdjustTime(t *testing.T) {
 	time1 := time.Date(2012, time.May, 12, 5, 0, 0, 0, time.UTC)
-	time1Mod, err := systemdtime.AdjustTime(&time1, " 4 days 2 hr")
+	time1Mod, err := AdjustTime(&time1, " 4 days 2 hr")
 	if err != nil {
 		t.Error(err)
 	}
