@@ -25,7 +25,7 @@ func main() {
 
 	fmt.Printf("Now is %s\n", now.Format(timeFormat))
 
-	adjustedTime, err := systemdtime.AdjustTime(&now, "2d")
+	adjustedTime, err := systemdtime.AdjustTime(now, "2d")
 	if err != nil {
 		fmt.Printf("error adjusting time: %v\n", err)
 		os.Exit(1)
