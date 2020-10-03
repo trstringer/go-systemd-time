@@ -58,15 +58,15 @@ func UnitToDuration(unit string) (time.Duration, error) {
 	return 0, fmt.Errorf("Unit %s did not match", unit)
 }
 
-// ToDuration converts a systemd relative time string into time.Duration
-func ToDuration(raw string) (time.Duration, error) {
+// ParseDuration converts a systemd relative time string into time.Duration
+func ParseDuration(raw string) (time.Duration, error) {
 	re, err := regexp.Compile(`^\s*-?\s*(\d+\s*[a-z]+)`)
 	if err != nil {
 		return 0, err
 	}
 
 	if !re.MatchString(raw) {
-		return 0, fmt.Errorf("ToDuration: incorrect format for raw input %s", raw)
+		return 0, fmt.Errorf("ParseDuration: incorrect format for raw input %s", raw)
 	}
 
 	reNegative, err := regexp.Compile(`^\s*-.*`)
@@ -119,7 +119,7 @@ func ToDuration(raw string) (time.Duration, error) {
 
 // AdjustTime takes a systemd time adjustment string and uses it to modify a time.Time
 func AdjustTime(original time.Time, adjustment string) (time.Time, error) {
-	duration, err := ToDuration(adjustment)
+	duration, err := ParseDuration(adjustment)
 	if err != nil {
 		return time.Time{}, err
 	}

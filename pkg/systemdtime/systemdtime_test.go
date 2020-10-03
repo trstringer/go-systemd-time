@@ -112,7 +112,7 @@ func TestToDuration(t *testing.T) {
 	}
 
 	for input, output := range testInputs {
-		duration, err := ToDuration(input)
+		duration, err := ParseDuration(input)
 		if err != nil {
 			t.Errorf("%v", err)
 		}
