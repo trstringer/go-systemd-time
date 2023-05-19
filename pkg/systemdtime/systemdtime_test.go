@@ -107,7 +107,11 @@ func TestToDuration(t *testing.T) {
 		" 2 min 23sec": 2*time.Minute + 23*time.Second,
 		"1sec":         1 * time.Second,
 		"1 hour":       1 * time.Hour,
+		"-1hour":       -1 * time.Hour,
+		"-1hour ago":   1 * time.Hour,
 		"-2day":        -2 * 24 * time.Hour,
+		"2day ago":     -2 * 24 * time.Hour,
+		"-2day ago":    2 * 24 * time.Hour,
 		"10 minutes":   10 * time.Minute,
 	}
 
@@ -121,6 +125,26 @@ func TestToDuration(t *testing.T) {
 			t.Errorf("Duration %d is not equal to output %d", duration, output)
 		}
 	}
+}
+
+func TestTranslatedWords(t *testing.T) {
+	testWord := func(t *testing.T, raw string, shouldSucceed time.Time) {
+		got, err := TranslateWords(raw)
+		if raw == "now" {
+			got = got.Truncate(time.Second)
+		}
+		if err != nil {
+			t.Fatalf("Input '%s' failed: err is '%v', and shouldSucceed set to %v", raw, err, shouldSucceed)
+		}
+		if !got.Equal(shouldSucceed) {
+			t.Fatalf("Input '%s' failed: got %v, and shouldSucceed set to %v", raw, got, shouldSucceed)
+		}
+	}
+
+	testWord(t, "now", time.Now().Truncate(time.Second))
+	testWord(t, "today", time.Now().Truncate(time.Hour*24))
+	testWord(t, "yesterday", time.Now().Add(time.Hour*-24).Truncate(time.Hour*24))
+	testWord(t, "tomorrow", time.Now().Add(time.Hour*24).Truncate(time.Hour*24))
 }
 
 func TestAdjustTime(t *testing.T) {
