@@ -1,6 +1,7 @@
 package systemdtime
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -69,6 +70,8 @@ func ParseDuration(raw string) (time.Duration, error) {
 		return 0, fmt.Errorf("ParseDuration: incorrect format for raw input %s", raw)
 	}
 
+	isAgo := strings.Contains(raw, "ago")
+
 	reNegative, err := regexp.Compile(`^\s*-.*`)
 	if err != nil {
 		return 0, err
@@ -114,7 +117,27 @@ func ParseDuration(raw string) (time.Duration, error) {
 		totalDuration *= -1
 	}
 
+	if isAgo {
+		totalDuration *= -1
+	}
+
 	return totalDuration, nil
+}
+
+func TranslateWords(raw string) (time.Time, error) {
+	switch raw {
+	case "now":
+		return time.Now(), nil
+	case "today":
+		return time.Now().Truncate(time.Hour * 24), nil
+	case "yesterday":
+		return time.Now().Add(time.Hour * -24).Truncate(time.Hour * 24), nil
+	case "tomorrow":
+		return time.Now().Add(time.Hour * 24).Truncate(time.Hour * 24), nil
+	default:
+		var t time.Time
+		return t, errors.New("no matching words")
+	}
 }
 
 // AdjustTime takes a systemd time adjustment string and uses it to modify a time.Time
